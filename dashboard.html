@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .welcome-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+        .amount-message {
+            font-weight: bold;
+            font-size: 1; /* Aumenta el tamaño de la fuente */
+            color: #333; /* Color del texto */
+        }
+        .survey-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h2 id="welcomeMessage">Bienvenido</h2>
+        <p id="statusMessage"></p>
+        <p id="amountMessage" class="amount-message"></p>
+        
+        <!-- Espacio para la encuesta con iframe -->
+        <div class="survey-container">
+            <h3>Encuesta de Satisfacción</h3>
+            <!-- Incrustar el formulario de encuesta en un iframe -->
+            <iframe 
+                width="640px" 
+                height="480px" 
+                src="https://forms.office.com/Pages/ResponsePage.aspx?id=vdgYYbRE9U2syqKVlrVD5oOUwL1CiKVCnxyDnaxFOT9UMUZMTElDVDBFNE9HS1lEVkI0Q1Y0S0I1Qi4u&embed=true" 
+                frameborder="0" 
+                marginwidth="0" 
+                marginheight="0" 
+                style="border: none; max-width:100%; max-height:100vh;" 
+                allowfullscreen 
+                webkitallowfullscreen 
+                mozallowfullscreen 
+                msallowfullscreen>
+            </iframe>
+        </div>
+        
+        <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+
+    <script>
+        // Obtener la información del usuario almacenada en sessionStorage
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+        // Verificar si la información existe y mostrarla
+        if (userInfo) {
+            document.getElementById("welcomeMessage").innerText = `Bienvenido, ${userInfo.name}`;
+            document.getElementById("statusMessage").innerText = ` ${userInfo.status}`;
+            document.getElementById("amountMessage").innerText = `Monto: $${userInfo.monto}`;
+        } else {
+            // Redirigir a la página de inicio de sesión si no hay información de usuario
+            window.location.href = "index.html";
+        }
+
+        // Función para cerrar sesión
+        function logout() {
+            sessionStorage.removeItem("userInfo");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
