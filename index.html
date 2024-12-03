@@ -96,7 +96,7 @@
                 // Redirigir a formulario.html con parámetros en la URL
                 const welcomeMessage = encodeURIComponent(users[username].welcomeMessage);
                 const registrationDate = encodeURIComponent(users[username].registrationDate);
-                window.location.href = `index.html?username=${username}&welcomeMessage=${welcomeMessage}&registrationDate=${registrationDate}`;
+                window.location.href = `formulario.html?username=${username}&welcomeMessage=${welcomeMessage}&registrationDate=${registrationDate}`;
             } else {
                 messageElement.textContent = "Usuario o contraseña incorrectos.";
                 messageElement.style.color = "#e50914"; // Color rojo para mensajes de error
