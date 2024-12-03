@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Envío</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .header {
+            background-color: #162245;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .record-list {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .record-item {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="usernameHeader">Bienvenido</h1>
+        <p id="welcomeMessageHeader"></p>
+    </div>
+
+    <div class="form-container">
+        <h2>Formulario de Envío</h2>
+        <div class="form-group">
+            <label for="numeroGuia">Número de Guía:</label>
+            <input type="text" id="numeroGuia" placeholder="Ingresa el número de guía">
+        </div>
+
+ <div class="form-group">
+            <label for="Fecha">Fecha :</label>
+            <input type="date" id="Fecha" placeholder="Ingresa fecha">
+        </div>
+
+
+        <div class="form-group">
+            <label for="tipoServicio">Tipo de Servicio:</label>
+            <select id="tipoServicio">
+                <option value="Estandar">Estandar</option>
+                <option value="Collect">Collect</option>
+                <option value="COD">COD</option>
+                <option value="Internacional">Internacional</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="destino">Destino:</label>
+            <input type="text" id="destino" placeholder="Ingresa el destino Ej. GUA ">
+        </div>
+        <div class="form-group">
+            <label for="monto">Monto:</label>
+            <input type="number" id="monto" placeholder="Ingresa el monto" step="0.01">
+        </div>
+        <button onclick="agregarRegistro()">Agregar Registro</button>
+        <button onclick="guardarCSV()">Guardar CSV</button>
+
+        <div class="record-list" id="recordList">
+            <h3>Registros</h3>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar datos del login en el encabezado
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const username = params.get('username') || 'Usuario';
+            const welcomeMessage = params.get('welcomeMessage') || '';
+
+            document.getElementById('usernameHeader').textContent = `Bienvenido, ${username}`;
+            document.getElementById('welcomeMessageHeader').textContent = welcomeMessage;
+        });
+
+        const registros = [];
+
+        function agregarRegistro() {
+            const numeroGuia = document.getElementById('numeroGuia').value;
+
+const Fecha = document.getElementById('Fecha').value;
+
+            const tipoServicio = document.getElementById('tipoServicio').value;
+            const destino = document.getElementById('destino').value;
+            const monto = document.getElementById('monto').value;
+
+            if (!numeroGuia || !destino || !monto || !Fecha) {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            const registro = {
+                numeroGuia,
+Fecha,
+                tipoServicio,
+                destino,
+                monto
+            };
+            registros.push(registro);
+            mostrarRegistros();
+
+            document.getElementById('numeroGuia').value = '';
+
+document.getElementById('Fecha').value = '';
+
+            document.getElementById('destino').value = '';
+            document.getElementById('monto').value = '';
+        }
+
+        function mostrarRegistros() {
+            const recordList = document.getElementById('recordList');
+            recordList.innerHTML = '<h3>Registros</h3>';
+            registros.forEach((registro, index) => {
+                const recordItem = document.createElement('div');
+                recordItem.classList.add('record-item');
+                recordItem.textContent = `${index + 1}. Número de Guía: ${registro.numeroGuia},Fecha: ${registro.Fecha}, Tipo de Servicio: ${registro.tipoServicio}, Destino: ${registro.destino}, Monto: ${registro.monto}`;
+                recordList.appendChild(recordItem);
+            });
+        }
+
+        function guardarCSV() {
+            if (registros.length === 0) {
+                alert('No hay registros para guardar.');
+                return;
+            }
+
+            let contenido = 'Numero de guia,Fecha,Tipo de servicio,Destino,Monto\n';
+            registros.forEach(registro => {
+                contenido += `${registro.numeroGuia},${registro.Fecha},${registro.tipoServicio},${registro.destino},${registro.monto}\n`;
+            });
+
+            const fecha = new Date();
+            const fechaArchivo = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
+            const nombreArchivo = `${fechaArchivo}_registros.csv`;
+
+            const blob = new Blob([contenido], { type: 'text/csv' });
+            const enlace = document.createElement('a');
+            enlace.href = URL.createObjectURL(blob);
+            enlace.download = nombreArchivo;
+            enlace.click();
+        }
+    </script>
+</body>
+</html>
