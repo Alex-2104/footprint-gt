@@ -3,100 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Envío</title>
+    <title>Inicio de Sesión</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #0a0f29; /* Azul oscuro */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        .form-container {
+        .login-container {
+            background-color: #162245; /* Azul más oscuro */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
             max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        .login-container h1 {
+            color: #ffffff; /* Blanco */
+            margin-bottom: 20px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input, select, button {
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
             width: 100%;
             padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e50914; /* Rojo Netflix */
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
             font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #007BFF;
-            color: white;
             cursor: pointer;
+            margin-top: 20px;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        .login-container button:hover {
+            background-color: #d40813;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Formulario de Envío</h2>
-        <div class="form-group">
-            <label for="numeroGuia">Número de Guía:</label>
-            <input type="text" id="numeroGuia" placeholder="Ingresa el número de guía">
-        </div>
-        <div class="form-group">
-            <label for="tipoServicio">Tipo de Servicio:</label>
-            <select id="tipoServicio">
-                <option value="Estandar">Estandar</option>
-                <option value="Collect">Collect</option>
-                <option value="COD">COD</option>
-                <option value="Internacional">Internacional</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="destino">Destino:</label>
-            <input type="text" id="destino" placeholder="Ingresa el destino">
-        </div>
-        <div class="form-group">
-            <label for="monto">Monto:</label>
-            <input type="number" id="monto" placeholder="Ingresa el monto" step="0.01">
-        </div>
-        <button onclick="guardarDatos()">Guardar</button>
+    <div class="login-container">
+        <h1>Inicio de Sesión</h1>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="button" onclick="login()">Iniciar Sesión</button>
+        </form>
+        <p id="message"></p>
     </div>
 
     <script>
-        function guardarDatos() {
-            const numeroGuia = document.getElementById('numeroGuia').value;
-            const tipoServicio = document.getElementById('tipoServicio').value;
-            const destino = document.getElementById('destino').value;
-            const monto = document.getElementById('monto').value;
-
-            if (!numeroGuia || !destino || !monto) {
-                alert('Por favor, completa todos los campos.');
-                return;
+        // Usuarios y contraseñas almacenados en el HTML
+        const users = {
+            "KEVINU": {
+                password: "1234",
+                welcomeMessage: "Que tal Kevin U bienvenido a la pagina de inicio",
+                welcomeMessage2: "msg bienvenida 2",
+                registrationDate: new Date().toLocaleDateString()
+            },
+            "ADMIN": {
+                password: "9999",
+                welcomeMessage: "Que tal Administrador de la pagina bienvenido a la pagina de inicio",
+                welcomeMessage2: "MENSAJE BIENVENIDA",
+                registrationDate: new Date().toLocaleDateString()
             }
+        };
 
-            const fecha = new Date();
-            const fechaArchivo = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
-            const nombreArchivo = `${fechaArchivo}_${numeroGuia}.txt`;
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const messageElement = document.getElementById("message");
 
-            const contenido = `Numero de Guia: ${numeroGuia}\nTipo de Servicio: ${tipoServicio}\nDestino: ${destino}\nMonto: ${monto}`;
-
-            const blob = new Blob([contenido], { type: 'text/plain' });
-            const enlace = document.createElement('a');
-            enlace.href = URL.createObjectURL(blob);
-            enlace.download = nombreArchivo;
-            enlace.click();
+            if (users[username] && users[username].password === password) {
+                // Redirigir a formulario.html con parámetros en la URL
+                const welcomeMessage = encodeURIComponent(users[username].welcomeMessage);
+                const registrationDate = encodeURIComponent(users[username].registrationDate);
+                window.location.href = `index.html?username=${username}&welcomeMessage=${welcomeMessage}&registrationDate=${registrationDate}`;
+            } else {
+                messageElement.textContent = "Usuario o contraseña incorrectos.";
+                messageElement.style.color = "#e50914"; // Color rojo para mensajes de error
+            }
         }
     </script>
 </body>
