@@ -8,10 +8,14 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-image: url('https://drive.usercontent.google.com/download?id=1h0RLph0j-wT63rQ0UZxSqGLYcYdtdCMx&export=view&authuser=0');
+            background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen en la página */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
         }
 
         .header {
-            background-color: #162245;
+            background-color: rgba(22, 34, 69, 0.8); /* Fondo semitransparente */
             color: white;
             padding: 10px;
             border-radius: 8px;
@@ -20,6 +24,7 @@
         }
 
         .form-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
             max-width: 400px;
             margin: auto;
             padding: 20px;
@@ -86,11 +91,10 @@
             <input type="text" id="numeroGuia" placeholder="Ingresa el número de guía">
         </div>
 
- <div class="form-group">
+        <div class="form-group">
             <label for="Fecha">Fecha :</label>
             <input type="date" id="Fecha" placeholder="Ingresa fecha">
         </div>
-
 
         <div class="form-group">
             <label for="tipoServicio">Tipo de Servicio:</label>
@@ -119,22 +123,27 @@
 
     <script>
         // Mostrar datos del login en el encabezado
+        let username = 'Usuario';
+
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
-            const username = params.get('username') || 'Usuario';
+            username = params.get('username') || 'Usuario';
             const welcomeMessage = params.get('welcomeMessage') || '';
 
             document.getElementById('usernameHeader').textContent = `Bienvenido, ${username}`;
             document.getElementById('welcomeMessageHeader').textContent = welcomeMessage;
+
+            // Establecer fecha actual por defecto
+            const fechaInput = document.getElementById('Fecha');
+            const fechaActual = new Date().toISOString().split('T')[0];
+            fechaInput.value = fechaActual;
         });
 
         const registros = [];
 
         function agregarRegistro() {
             const numeroGuia = document.getElementById('numeroGuia').value;
-
-const Fecha = document.getElementById('Fecha').value;
-
+            const Fecha = document.getElementById('Fecha').value;
             const tipoServicio = document.getElementById('tipoServicio').value;
             const destino = document.getElementById('destino').value;
             const monto = document.getElementById('monto').value;
@@ -145,8 +154,9 @@ const Fecha = document.getElementById('Fecha').value;
             }
 
             const registro = {
+                username,
                 numeroGuia,
-Fecha,
+                Fecha,
                 tipoServicio,
                 destino,
                 monto
@@ -155,9 +165,7 @@ Fecha,
             mostrarRegistros();
 
             document.getElementById('numeroGuia').value = '';
-
-document.getElementById('Fecha').value = '';
-
+            document.getElementById('Fecha').value = new Date().toISOString().split('T')[0];
             document.getElementById('destino').value = '';
             document.getElementById('monto').value = '';
         }
@@ -168,7 +176,7 @@ document.getElementById('Fecha').value = '';
             registros.forEach((registro, index) => {
                 const recordItem = document.createElement('div');
                 recordItem.classList.add('record-item');
-                recordItem.textContent = `${index + 1}. Número de Guía: ${registro.numeroGuia},Fecha: ${registro.Fecha}, Tipo de Servicio: ${registro.tipoServicio}, Destino: ${registro.destino}, Monto: ${registro.monto}`;
+                recordItem.textContent = `${index + 1}. Usuario: ${registro.username}, Número de Guía: ${registro.numeroGuia}, Fecha: ${registro.Fecha}, Tipo de Servicio: ${registro.tipoServicio}, Destino: ${registro.destino}, Monto: ${registro.monto}`;
                 recordList.appendChild(recordItem);
             });
         }
@@ -179,9 +187,9 @@ document.getElementById('Fecha').value = '';
                 return;
             }
 
-            let contenido = 'Numero de guia,Fecha,Tipo de servicio,Destino,Monto\n';
+            let contenido = 'Usuario,Numero de guia,Fecha,Tipo de servicio,Destino,Monto\n';
             registros.forEach(registro => {
-                contenido += `${registro.numeroGuia},${registro.Fecha},${registro.tipoServicio},${registro.destino},${registro.monto}\n`;
+                contenido += `${registro.username},${registro.numeroGuia},${registro.Fecha},${registro.tipoServicio},${registro.destino},${registro.monto}\n`;
             });
 
             const fecha = new Date();
